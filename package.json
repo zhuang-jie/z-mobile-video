@@ -14,10 +14,19 @@
     "vue3 video player",
     "video player",
     "vue h5 video",
-    "mobile video",
-    "vue mobile video",
-    "vue mobile player"
+    "vue mobile video"
   ],
+  "author": {
+    "name": "zhuang-jie",
+    "email": "1450482096@qq.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhuang-jie/z-mobile-video.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zhuang-jie/z-mobile-video/issues"
+  },
   "license": "ISC",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.es.js",
