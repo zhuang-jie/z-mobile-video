@@ -1,0 +1,52 @@
+.z-slider {
+    --z-slider-main-bg-color: rgba(255, 255, 255, 0.5);
+    --z-slider-btn-bg-color: #fff;
+    --z-slider-runway-bg-color: rgba(255, 255, 255, 0.2);
+    --z-slider-height: 2px;
+    --z-slider-border-radius: 2px;
+    --z-slider-btn-size: 4px;
+    position: relative;
+    width: 100%;
+    height: 10px;
+    display: flex;
+    align-items: center;
+    &__runway {
+        flex: 1;
+        height: var(--z-slider-height);
+        border-radius: var(--z-slider-border-radius);
+        background-color: var(--z-slider-runway-bg-color);
+        position: relative;
+        cursor: pointer;
+        transition: none 50ms ease-out;
+        transition-property: height,border-radius,background-color;
+    }
+    &__bar {
+        position: absolute;
+        left: 0;
+        height: var(--z-slider-height);
+        border-radius: var(--z-slider-border-radius);
+        background-color: var(--z-slider-main-bg-color);
+        transition: none 50ms ease-out;
+        transition-property: height,border-radius,background-color;
+    }
+    &__btn {
+        width: var(--z-slider-btn-size);
+        height: var(--z-slider-btn-size);
+        position: absolute;
+        z-index: 1;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: var(--z-slider-btn-size);
+        background-color: var(--z-slider-btn-bg-color);
+        transition: none 50ms ease-out;
+        transition-property: width,height,border-radius,background-color;
+    }
+    &--hover {
+        --z-slider-main-bg-color: #fff;
+        --z-slider-btn-bg-color: #fff;
+        --z-slider-runway-bg-color: rgba(255, 255, 255, 0.4);
+        --z-slider-height: 6px;
+        --z-slider-border-radius: 3px;
+        --z-slider-btn-size: 14px;
+    }
+}

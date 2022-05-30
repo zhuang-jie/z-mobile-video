@@ -1,0 +1,19 @@
+.z-loading {
+    --z-loading-height: 2px;
+    --z-loading-bg-color: rgba(255, 255, 255, 0.5);
+    position: relative;
+    height: var(--z-loading-height);
+    &__inner {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        height: var(--z-loading-height);
+        background-color: var(--z-loading-bg-color);
+        transform: translate(-50%, 0);
+        animation: loading 500ms ease-in-out infinite;
+    }
+}
+@keyframes loading {
+    0% { width: 0%; }
+    90% { width: 100%; }
+}

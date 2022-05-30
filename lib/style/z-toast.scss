@@ -1,0 +1,39 @@
+.z-toast {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 96px;
+    max-width: 50%;
+    padding: 8px 12px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    white-space: pre-wrap;
+    word-break: break-all;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 6px;
+    box-sizing: border-box;
+    &--middle {
+        top: 50%;
+        left: 50%;
+        transform: translate3d(-50%,-50%,0);
+    }
+    &--bottom {
+        left: 50%;
+        bottom: 15%;
+        transform: translate3d(-50%, 0, 0);
+    }
+}
+
+.z-fade-enter-active,
+.z-fade-leave-active {
+	transition: all 250ms ease;
+}
+
+.z-fade-enter-from,
+.z-fade-leave-active {
+	opacity: 0;
+}
