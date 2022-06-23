@@ -27,7 +27,7 @@ export const videoProps = {
     loop: { type: Boolean, default: true },             // 循环播放
     volume: { type: Number, default: 1 },               // 默认音量大小
     preload: { type: String, default: 'auto' },         // 预加载
-    objectFit: { type: String, default: 'contain' },    // 视频剪切
+    objectFit: { type: String, default: '' },           // 视频剪切
     showCurrentTime: { type: Boolean, default: false }, // 滑动进度条时是否显示时长
     errorText: { type: String, default: '' },           // 视频error时，显示的toast
 }

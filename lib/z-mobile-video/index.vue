@@ -16,9 +16,12 @@
                 :muted="muted"
                 :loop="loop"
                 :preload="preload"
-                :style="`object-fit: ${objectFit}`"
+                :style="objectFit ? `object-fit: ${objectFit}` : ''"
                 v-on="videoEvents"
             >您的浏览器不支持Video标签。</video>
+            <slot v-if="!state.isPlayed && poster" name="poster">
+                <div class="z-player-video__poster" :style="`background-image: url(${poster})`"></div>
+            </slot>
         </div>
         <div class="z-player-content">
             <div ref="$inner" class="z-player-state">
@@ -79,6 +82,7 @@ const state = reactive({
     totalTime: '00:00:00', // 总时长
     waiting: false, // 是否在缓冲
     isDragging: false,
+    isPlayed: false, // 是否播放过
 })
 const isError = computed(() => state.loadStateType === 'error' || state.loadStateType === 'stalled')
 const $video = ref<HTMLVideoElement>()
@@ -99,6 +103,10 @@ videoEvents['canplay'] = compose(videoEvents['canplay'], () => {
     if (state.playBtnState !== 'play' || state.autoPlay) {
         playHandle()
     }
+})
+// 播放
+videoEvents['play'] = compose(videoEvents['play'], () => {
+    state.isPlayed = true
 })
 // 播放结束
 videoEvents['ended'] = compose(videoEvents['ended'], () => {

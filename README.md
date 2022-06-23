@@ -104,6 +104,7 @@ const options = reactive({
 <template>
   <div>
     <z-mobile-video v-bind="options">
+      <template #poster>自定义poster</template>
       <template #play-btn>播放按钮</template>
       <template #error>视频请求失败</template>
       <template #footer>进度条下方显示</template>
@@ -228,6 +229,7 @@ onMounted(() => {
 #### Slots
 | 名称         | 说明                                                        |
 | ------------ | ----------------------------------------------------------- |
+| poster       | 视频封面插槽                                                 |
 | play-btn     | 播放状态插槽                                                 |
 | error        | 失败状态插槽                                                 |
 | footer       | 底部插槽                                                     |
