@@ -10,7 +10,6 @@
                 x5-video-player-fullscreen="false"
                 x5-video-orientation="portraint"
                 :src="src"
-                :type="type"
                 :poster="poster"
                 :volume="volume"
                 :muted="muted"
@@ -40,7 +39,7 @@
                     <z-loading v-show="!state.isDragging ? state.waiting : false" />
                     <z-slider
                         v-model="state.playProgress"
-                        :disabled="state.loadStateType === 'error'"
+                        :disabled="isError"
                         @change="progressBarChange"
                         @dragstrat="state.isDragging = true"
                         @dragend="state.isDragging = false"
@@ -59,6 +58,7 @@ export default {
 }
 </script>
 <script setup lang="ts">
+import Hls from 'hls.js'
 import ZSlider from '../components/z-slider.vue'
 import ZLoading from '../components/z-loading.vue'
 import { Toast } from '../components/toast'
@@ -83,6 +83,7 @@ const state = reactive({
     waiting: false, // 是否在缓冲
     isDragging: false,
     isPlayed: false, // 是否播放过
+    isCanPlay: false, // 是否可播放
 })
 const isError = computed(() => state.loadStateType === 'error' || state.loadStateType === 'stalled')
 const $video = ref<HTMLVideoElement>()
@@ -99,6 +100,7 @@ const videoEvents = videoEmits.reduce((events, name) => {
 }, {} as {[key: string]: (e: Event) => void})
 // 可以播放
 videoEvents['canplay'] = compose(videoEvents['canplay'], () => {
+    state.isCanPlay = true
     //如果是自动播放 则开始播放
     if (state.playBtnState !== 'play' || state.autoPlay) {
         playHandle()
@@ -108,6 +110,10 @@ videoEvents['canplay'] = compose(videoEvents['canplay'], () => {
 videoEvents['play'] = compose(videoEvents['play'], () => {
     state.isPlayed = true
 })
+// 暂停
+videoEvents['pause'] = compose(videoEvents['pause'], () => {
+    state.waiting = false
+})
 // 播放结束
 videoEvents['ended'] = compose(videoEvents['ended'], () => {
     state.playBtnState = 'replay' // 此时的控制按钮应该显示重新播放
@@ -115,6 +121,7 @@ videoEvents['ended'] = compose(videoEvents['ended'], () => {
 // error
 videoEvents['error'] = compose(videoEvents['error'], () => {
     state.playBtnState = 'replay' //此时的控制按钮应该显示重新播放
+    state.waiting = false
     props.errorText && Toast(props.errorText)
 })
 // 视频缓冲中
@@ -175,19 +182,25 @@ useDoubleClick($inner, (e) => {
 // 播放方法
 let timer: any = null
 const playHandle = () => {
-    clearTimeout(timer)
-    $video.value?.play().catch(() => {
-        timer = setTimeout(() => {
-            state.playBtnState = 'replay'
-            // state.loadStateType = 'error'
-        }, 500)
-    })
+    if (isError.value) return
+    if (state.isCanPlay) {
+        clearTimeout(timer)
+        $video.value?.play().catch(() => {
+            timer = setTimeout(() => {
+                state.playBtnState = 'replay'
+                // state.loadStateType = 'error'
+            }, 500)
+        })
+    } else {
+        state.waiting = true
+    }
     state.playBtnState = 'pause'
 }
 // 暂停
 const pauseHandle = () => {
     $video.value?.pause()
     state.playBtnState = 'play'
+    state.waiting = false
 }
 
 // 播放or暂停
@@ -203,6 +216,36 @@ const togglePlay = () => {
 const playbackRate = (val: number) => {
     $video.value && ($video.value.playbackRate = val)
 }
+
+let _hls: Hls|undefined = undefined
+const init = () => {
+    if (!($video.value?.canPlayType(props.type) || $video.value?.canPlayType('application/vnd.apple.mpegurl'))) {
+        if (Hls.isSupported()) {
+            if (_hls) _hls.destroy()
+            _hls = new Hls({ fragLoadingTimeOut: 2000 })
+            _hls.detachMedia() //解除绑定
+            _hls.attachMedia($video.value as HTMLVideoElement)
+            _hls.loadSource(props.src)
+            // 加载成功
+            _hls.on(Hls.Events.MANIFEST_PARSED, (ev, data) => {
+                console.log(ev, data)
+            })
+            // 加载失败
+            _hls.on(Hls.Events.ERROR, (ev, data) => {
+                console.log(ev, data)
+                if (data.fatal) {
+                    videoEvents['error']({} as Event)
+                }
+            })
+        }
+    }
+}
+
+watch(() => props.src, () => {
+    nextTick(() => {
+        init()
+    })
+}, { immediate: true })
 
 defineExpose({
     $video,

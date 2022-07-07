@@ -18,13 +18,17 @@
 
 ## 功能一览
 
-1. 支持倍速播放设置
-2. 支持从固定时间开始播放
-3. 支持双击事件
-4. 可自定义播放按钮
-5. 可自定义error按钮
-6. 暂不支持长按功能，后续版本会加上
-7. 暂不支持缩放功能，后续版本会加上
+1. 支持m3u8格式视频
+2. 支持倍速播放设置
+3. 支持从固定时间开始播放
+4. 支持双击事件
+5. 可自定义播放按钮
+6. 可自定义error按钮
+7. 暂不支持长按功能，后续版本会加上
+8. 暂不支持缩放功能，后续版本会加上
+
+## 近期更新 v1.0.3
+- 新增: 支持 hls 视频流播放
 
 # 使用指南
 
@@ -90,6 +94,26 @@ const options = reactive({
   currentTime: 0,    // 当前播放时间
   showCurrentTime: false, // 是否在拖动进度条时toast当前时间文字
   errorText: '',    // 视频error时，toast提示
+})
+</script>
+
+<style scoped></style>
+```
+
+### Hls m3u8视频/直播
+```vue
+<template>
+  <div>
+    <z-mobile-video v-bind="options"></z-mobile-video>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { reactive } from 'vue'
+
+const options = reactive({
+  src: 'xxx.m3u8', // 视频源
+  type: 'm3u8', // 视频类型
 })
 </script>
 

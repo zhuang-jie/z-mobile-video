@@ -1,9 +1,11 @@
 {
   "name": "z-mobile-video",
   "private": false,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "vue3 移动端视频组件",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "vue",
     "vue3",
@@ -43,6 +45,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "hls.js": "^1.1.5",
     "vue": "^3.2.25"
   },
   "devDependencies": {
