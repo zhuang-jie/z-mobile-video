@@ -63,7 +63,7 @@ import Hls from 'hls.js'
 import ZSlider from '../components/z-slider.vue'
 import ZLoading from '../components/z-loading.vue'
 import { Toast } from '../components/toast'
-import { compose, timeFormat } from '../utils/util'
+import { compose, timeFormat, isIOS } from '../utils/util'
 import { videoEmits, videoProps } from './tokens'
 import useDoubleClick from '../hooks/useDoubleClick'
 
@@ -184,7 +184,8 @@ useDoubleClick($inner, (e) => {
 let timer: any = null
 const playHandle = () => {
     if (isError.value) return
-    if (state.isCanPlay) {
+    // IOS中 oncanplay 事件不会自动执行
+    if (state.isCanPlay || isIOS()) {
         clearTimeout(timer)
         $video.value?.play().catch(() => {
             timer = setTimeout(() => {

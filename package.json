@@ -1,7 +1,7 @@
 {
   "name": "z-mobile-video",
   "private": false,
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "vue3 移动端视频组件",
   "files": [
     "dist"

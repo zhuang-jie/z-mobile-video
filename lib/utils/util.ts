@@ -2,6 +2,9 @@ import { Component } from 'vue'
 // 是否是移动端
 export const isMobile = !!('ontouchstart' in window)
 
+// 是否是ios
+export const isIOS = () => !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
+
 // 时间格式化
 export const timeFormat = (time: number) => {
     let hh: any = ~~(time / 3600)
