@@ -4,8 +4,9 @@
             <video
                 ref="$video"
                 class="z-player-video__inner"
-                webkit-playsinline
-                playsinline
+                playsinline="true"
+                webkit-playsinline="true"
+                x-webkit-airplay="allow"
                 x5-video-player-type="h5"
                 x5-video-player-fullscreen="false"
                 x5-video-orientation="portraint"
@@ -188,7 +189,7 @@ const playHandle = () => {
         $video.value?.play().catch(() => {
             timer = setTimeout(() => {
                 state.playBtnState = 'replay'
-                // state.loadStateType = 'error'
+                state.waiting = false
             }, 500)
         })
     } else {
@@ -217,25 +218,25 @@ const playbackRate = (val: number) => {
     $video.value && ($video.value.playbackRate = val)
 }
 
-let _hls: Hls|undefined = undefined
 const init = () => {
     if (!($video.value?.canPlayType(props.type) || $video.value?.canPlayType('application/vnd.apple.mpegurl'))) {
         if (Hls.isSupported()) {
-            if (_hls) _hls.destroy()
-            _hls = new Hls({ fragLoadingTimeOut: 2000 })
-            _hls.detachMedia() //解除绑定
-            _hls.attachMedia($video.value as HTMLVideoElement)
-            _hls.loadSource(props.src)
-            // 加载成功
-            _hls.on(Hls.Events.MANIFEST_PARSED, (ev, data) => {
-                console.log(ev, data)
-            })
-            // 加载失败
-            _hls.on(Hls.Events.ERROR, (ev, data) => {
-                console.log(ev, data)
-                if (data.fatal) {
-                    videoEvents['error']({} as Event)
-                }
+            const hls = new Hls()
+            hls.detachMedia() //解除绑定
+            hls.attachMedia($video.value as HTMLVideoElement)
+            hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+                hls.loadSource(props.src)
+                // 加载成功
+                hls.on(Hls.Events.MANIFEST_PARSED, (ev, data) => {
+                    console.log(ev, data)
+                })
+                // 加载失败
+                hls.on(Hls.Events.ERROR, (ev, data) => {
+                    console.log(ev, data)
+                    if (data.fatal) {
+                        videoEvents['error']({} as Event)
+                    }
+                })
             })
         }
     }
